@@ -1,6 +1,6 @@
 use std::{
     env::{args, current_dir},
-    fs::{File, remove_file, remove_dir_all},
+    fs::{File, OpenOptions, remove_file, remove_dir_all},
     io::Result,
     process::Command,
 };
@@ -42,7 +42,8 @@ fn main() -> Result<()> {
 
             let app_compressed_path = "App.cmp";
 
-            let app_compressed = File::create(app_compressed_path).expect("App.cmp exists!");
+            let app_compressed = OpenOptions::new().write(true).create_new(true)
+                .open(app_compressed_path).expect("App.cmp exists!");
             let app_encoder = XzEncoder::new(app_compressed, 9);
             let mut archive = tar::Builder::new(app_encoder);
 
