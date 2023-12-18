@@ -9,6 +9,7 @@ all: inflator.exe deflator.exe
 	@mkdir -p build/App
 	@cp pothan/launcher.exe build/App/
 	@mkdir -p build/App/modules
+	@mkdir -p build/App/xiphos
 
 inflator.exe: inflator.c
 	@gcc inflator.c -o inflator.exe
