@@ -122,8 +122,8 @@ fn main() -> Result<()> {
 
                     let mut buffer: Vec<u8> = vec![0; buffer_size];
                     app_tarball.seek(SeekFrom::Start((i as u64 - 1)*buffer_size as u64)).unwrap();
-                    app_tarball.read_exact(&mut buffer).unwrap();
-                    app_encoder.write_all(&buffer).unwrap();
+                    app_tarball.read(&mut buffer).unwrap();
+                    app_encoder.write(&buffer).unwrap();
                     app_encoder.finish().unwrap().flush().unwrap();
                 });
 
@@ -131,16 +131,16 @@ fn main() -> Result<()> {
             }            
 
             let size = app_tarball.metadata().unwrap().len();
-            let buffer_size = size as usize - (7 * buffer_size);
+            let new_buffer_size = size as usize - ((threads_no as usize - 1) * buffer_size);
 
             let app_last_compressed = File::create(APP_COMPRESSED_PATH.to_owned() + "." + threads_no.to_string().as_str())
                 .unwrap();
             let mut app_encoder = XzEncoder::new(app_last_compressed, 9);
 
-            let mut buffer: Vec<u8> = vec![0; buffer_size];
+            let mut buffer: Vec<u8> = vec![0; new_buffer_size];
             app_tarball.seek(SeekFrom::Start((threads_no as u64 - 1)*buffer_size as u64)).unwrap();
-            app_tarball.read_exact(&mut buffer).unwrap();
-            app_encoder.write_all(&buffer).unwrap();
+            app_tarball.read(&mut buffer).unwrap();
+            app_encoder.write(&buffer).unwrap();
             app_encoder.finish().unwrap().flush().unwrap();
 
             for thread in compressor_threads {
