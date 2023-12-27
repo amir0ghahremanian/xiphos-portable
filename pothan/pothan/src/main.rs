@@ -70,7 +70,7 @@ fn main() -> Result<()> {
                 Ok(_) => {}
                 Err(_) => {}
             };
-            match remove_file("Xiphos.lnk") {
+            match remove_file(APP_SHORTCUT_NAME.to_owned() + ".lnk") {
                 Ok(_) => {}
                 Err(_) => {}
             };
